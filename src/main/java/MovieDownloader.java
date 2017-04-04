@@ -23,13 +23,13 @@ public class MovieDownloader {
 		//construct the url for the omdbapi API
 		String urlString = "";
 		try {
-			urlString = "http://www.omdbapi.com/?s=" + URLEncoder.encode(movie, "UTF-8") + "&type=movie";
-		}catch(UnsupportedEncodingException uee){
+			urlString = "http://www.omdbapi.com/?s=" + URLEncoder.encode(movie, "UTF-8") + "&type=movie"; //adds the query string to the omdb api search url
+		}catch(UnsupportedEncodingException uee){ // catches a bad encoding exception and returns null
 			return null;
 		}
 
-		HttpURLConnection urlConnection = null;
-		BufferedReader reader = null;
+		HttpURLConnection urlConnection = null; //creates an http connection to send the request with
+		BufferedReader reader = null; //creates a reader to read text from a characer input stream
 
 		String[] movies = null;
 
@@ -37,16 +37,16 @@ public class MovieDownloader {
 
 			URL url = new URL(urlString);
 
-			urlConnection = (HttpURLConnection) url.openConnection();
-			urlConnection.setRequestMethod("GET");
-			urlConnection.connect();
+			urlConnection = (HttpURLConnection) url.openConnection(); // opens http connection
+			urlConnection.setRequestMethod("GET"); // sets http request method to GET
+			urlConnection.connect(); // connects to api
 
-			InputStream inputStream = urlConnection.getInputStream();
+			InputStream inputStream = urlConnection.getInputStream(); //reads response from http request
 			StringBuffer buffer = new StringBuffer();
 			if (inputStream == null) {
 				return null;
 			}
-			reader = new BufferedReader(new InputStreamReader(inputStream));
+			reader = new BufferedReader(new InputStreamReader(inputStream)); // uses data from inputstream to read line by line
 
 			String line = reader.readLine();
 			while (line != null) {
@@ -58,7 +58,7 @@ public class MovieDownloader {
 				return null;
 			}
 			String results = buffer.toString();
-			results = results.replace("{\"Search\":[","");
+			results = results.replace("{\"Search\":[",""); //formats string into proper output
 			results = results.replace("]}","");
 			results = results.replace("},", "},\n");
 
@@ -67,7 +67,7 @@ public class MovieDownloader {
 		catch (IOException e) {
 			return null;
 		} 
-		finally {
+		finally { //disconnects from http connection and closes reader
 			if (urlConnection != null) {
 				urlConnection.disconnect();
 			}

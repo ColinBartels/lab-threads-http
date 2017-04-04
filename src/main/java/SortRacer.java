@@ -11,27 +11,48 @@ import java.util.Random;
  */
 public class SortRacer {
 
+	public static Integer[] nums;
+	public static SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSSS"); //for output
+
 	public static void main(String[] args) 
 	{
-		SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSSS"); //for output
-		Integer[] nums;
-
+		
+		nums = SortRacer.shuffled((int)Math.pow(10,7), 448); //a list of shuffled 10 million numbers
 		
 		/** Merge Sort **/
-		nums = shuffled((int)Math.pow(10,7), 448); //a list of shuffled 10 million numbers
-
-		System.out.println("Starting merge sort at "+dateFormat.format(new Date()));
-		Sorting.mergeSort(nums);
-		System.out.println("Merge sort finished at "+dateFormat.format(new Date())+" !");
+		// nums = shuffled((int)Math.pow(10,7), 448); //a list of shuffled 10 million numbers
+		// System.out.println("Starting merge sort at "+dateFormat.format(new Date()));
+		// Sorting.mergeSort(nums);
+		// System.out.println("Merge sort finished at "+dateFormat.format(new Date())+" !");
 
 		
-		/** Quick Sort **/
-		nums = shuffled((int)Math.pow(10,7), 448); //a list of shuffled 10 million numbers
-		System.out.println("Starting quicksort at "+dateFormat.format(new Date()));
-		Sorting.quickSort(nums);
-		System.out.println("Quicksort finished at "+dateFormat.format(new Date())+" !");
+		// /** Quick Sort **/
+		// nums = shuffled((int)Math.pow(10,7), 448); //a list of shuffled 10 million numbers
+		// System.out.println("Starting quicksort at "+dateFormat.format(new Date()));
+		// Sorting.quickSort(nums);
+		// System.out.println("Quicksort finished at "+dateFormat.format(new Date())+" !");
+
+		Thread merge = new Thread(new MergeSortThread());
+		Thread quick = new Thread(new QuickSortThread());
+		merge.start();
+		quick.start();
 	}
-	
+
+	public static class QuickSortThread implements Runnable {
+		public void run() {
+			System.out.println("Starting quick sort at "+dateFormat.format(new Date()));
+			Sorting.quickSort(nums);
+			System.out.println("Quick sort finished at "+dateFormat.format(new Date())+" !");
+		}
+	}
+
+	public static class MergeSortThread implements Runnable {
+		public void run() {
+			System.out.println("Starting merge sort at "+dateFormat.format(new Date()));
+			Sorting.mergeSort(nums);
+			System.out.println("Merge sort finished at "+dateFormat.format(new Date())+" !");
+		}
+	}
 	
 	/**
 	 * A utility method that returns a shuffled (randomly sorted) array of integers from 1 to the given number.
